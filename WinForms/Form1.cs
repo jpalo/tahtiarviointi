@@ -495,6 +495,11 @@ namespace com.jussipalo.tahti
         /// <returns></returns>
         private int SkaterCompare(Skater skaterY, Skater skaterX)
         {
+            if(skaterY.TotalPoints == 0 && skaterX.TotalPoints == 0)
+            {
+                return 0;
+            }
+
             if (skaterY.TotalPoints == skaterX.TotalPoints)
             {
                 if (skaterY.AveragePointsPerArea[0] == skaterX.AveragePointsPerArea[0])
