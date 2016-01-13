@@ -32,10 +32,11 @@ namespace com.jussipalo.tahti
             Deductions = new List<decimal>();
             Mention = "";
         }
-        
+
+        public int SkatingOrder { get; set; }
         public string Name { get; set; }
         public string Team { get; set; }
-        public string Position { get; set; }
+        public int Position { get; set; }
         public decimal TotalPoints { get; set; }
         public List<int> PointsJudge1 { get; set; }
         public List<int> PointsJudge2 { get; set; }

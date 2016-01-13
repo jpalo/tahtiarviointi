@@ -39,8 +39,6 @@
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.dgvSkaters = new System.Windows.Forms.DataGridView();
-            this.Nimi = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Seura = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.txtMention = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -89,6 +87,9 @@
             this.avaaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tallennaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.suljeSovellusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Order = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Nimi = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Seura = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl.SuspendLayout();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSkaters)).BeginInit();
@@ -181,11 +182,13 @@
             // 
             this.dgvSkaters.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSkaters.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Order,
             this.Nimi,
             this.Seura});
             this.dgvSkaters.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvSkaters.Location = new System.Drawing.Point(0, 0);
             this.dgvSkaters.Margin = new System.Windows.Forms.Padding(2);
+            this.dgvSkaters.MultiSelect = false;
             this.dgvSkaters.Name = "dgvSkaters";
             this.dgvSkaters.RowTemplate.Height = 28;
             this.dgvSkaters.Size = new System.Drawing.Size(648, 497);
@@ -194,24 +197,6 @@
             this.dgvSkaters.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvSkaters_EditingControlShowing);
             this.dgvSkaters.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvSkaters_RowValidating);
             this.dgvSkaters.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dgvSkaters_UserDeletingRow);
-            // 
-            // Nimi
-            // 
-            this.Nimi.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Nimi.Frozen = true;
-            this.Nimi.HeaderText = "Nimi";
-            this.Nimi.MinimumWidth = 160;
-            this.Nimi.Name = "Nimi";
-            this.Nimi.Width = 160;
-            // 
-            // Seura
-            // 
-            this.Seura.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Seura.Frozen = true;
-            this.Seura.HeaderText = "Seura";
-            this.Seura.MinimumWidth = 160;
-            this.Seura.Name = "Seura";
-            this.Seura.Width = 160;
             // 
             // tabPage4
             // 
@@ -730,6 +715,32 @@
             this.suljeSovellusToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.suljeSovellusToolStripMenuItem.Text = "Sulje sovellus";
             // 
+            // Order
+            // 
+            this.Order.Frozen = true;
+            this.Order.HeaderText = "Järjestys";
+            this.Order.MinimumWidth = 50;
+            this.Order.Name = "Order";
+            this.Order.Width = 50;
+            // 
+            // Nimi
+            // 
+            this.Nimi.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Nimi.Frozen = true;
+            this.Nimi.HeaderText = "Nimi";
+            this.Nimi.MinimumWidth = 160;
+            this.Nimi.Name = "Nimi";
+            this.Nimi.Width = 160;
+            // 
+            // Seura
+            // 
+            this.Seura.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Seura.Frozen = true;
+            this.Seura.HeaderText = "Seura";
+            this.Seura.MinimumWidth = 160;
+            this.Seura.Name = "Seura";
+            this.Seura.Width = 160;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -821,13 +832,14 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Tuomari1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Type;
         private System.Windows.Forms.Button btnOletusarvot;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Seura;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Nimi;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem tiedostoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem avaaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem suljeSovellusToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tallennaToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Order;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Nimi;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Seura;
     }
 }
 

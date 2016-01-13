@@ -121,9 +121,9 @@ namespace com.jussipalo.tahti
                     continue;
                 }
 
-                if (string.IsNullOrWhiteSpace(row.Cells[0].Value?.ToString()) || string.IsNullOrWhiteSpace(row.Cells[1].Value?.ToString()))
+                if (string.IsNullOrWhiteSpace(row.Cells[0].Value?.ToString()) || string.IsNullOrWhiteSpace(row.Cells[1].Value?.ToString()) || string.IsNullOrWhiteSpace(row.Cells[2].Value?.ToString()))
                 {
-                    row.ErrorText = "Luistelijan nimi tai seura puuttuu.";
+                    row.ErrorText = "Luistelijan luistelujärjestys, nimi tai seura puuttuu.";
                 }
                 else
                 {
@@ -132,13 +132,14 @@ namespace com.jussipalo.tahti
                     // Add skater if not already exists
                     if (!updatedSkater)
                     {
-                        var currSkater = _event.Skaters.Find(s => s.Name.Equals(row.Cells[0].Value.ToString()) && s.Team.Equals(row.Cells[1].Value.ToString()));
+                        var currSkater = _event.Skaters.Find(s => s.SkatingOrder.Equals(int.Parse(row.Cells[0].Value.ToString())) && s.Name.Equals(row.Cells[1].Value.ToString()) && s.Team.Equals(row.Cells[2].Value.ToString()));
                         if (currSkater == null)
                         {
                             _event.Skaters.Add(new Skater
                             {
-                                Name = row.Cells[0].Value.ToString(),
-                                Team = row.Cells[1].Value.ToString()
+                                SkatingOrder = int.Parse(row.Cells[0].Value.ToString()),
+                                Name = row.Cells[1].Value.ToString(),
+                                Team = row.Cells[2].Value.ToString()
                             });
                         }
                     }
@@ -187,7 +188,6 @@ namespace com.jussipalo.tahti
             txtDressDeduction.TextChanged -= Deduction_TextChanged;
             txtTimeDeduction.TextChanged -= Deduction_TextChanged;
             txtMention.TextChanged -= txtMention_TextChanged;
-            //dgvSkaterPoints.RowValidating -= dgvSkaterPoints_RowValidating;
 
             dgvSkaterPoints.Rows.Clear();
 
@@ -229,7 +229,6 @@ namespace com.jussipalo.tahti
             txtDressDeduction.TextChanged += Deduction_TextChanged;
             txtTimeDeduction.TextChanged += Deduction_TextChanged;
             txtMention.TextChanged += txtMention_TextChanged;
-            //dgvSkaterPoints.RowValidating += dgvSkaterPoints_RowValidating;
         }
 
         private void AddSkaterPoints()
@@ -293,10 +292,10 @@ namespace com.jussipalo.tahti
         }
 
         #region Event handlerss       
-        private void dgvSkaters_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
-        {
-            UpdateRowStorage(e.Row.Index, false);
-        }
+        //private void dgvSkaters_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
+        //{            
+        //    UpdateRowStorage(e.Row.Index, false);
+        //}
 
         private void btnSelectTemplate_Click(object sender, EventArgs e)
         {
@@ -421,7 +420,7 @@ namespace com.jussipalo.tahti
 
         private void dgvSkaters_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
-            _event.Skaters.Remove(_event.Skaters.Find(s => s.Name.Equals(e.Row.Cells[0].Value) && s.Team.Equals(e.Row.Cells[1].Value)));
+            _event.Skaters.RemoveAll(s => s.SkatingOrder.Equals(e.Row.Cells[0].Value) && s.Name.Equals(e.Row.Cells[1].Value) && s.Team.Equals(e.Row.Cells[2].Value));
         }
 
         private void ddlSkaters_SelectionChangeCommitted(object sender, EventArgs e)
@@ -462,30 +461,54 @@ namespace com.jussipalo.tahti
 
                 // Tulokset
                 case (2):
-                    if (_event.Skaters.Count > 0)
+
+                    if (_event.Skaters.Count == 0)
                     {
-                        _finalSkaters = _event.Skaters.ToList();
-
-                        CalculatePoints(_finalSkaters);
-
-                        // Sort by position
-                        _finalSkaters.Sort((x, y) => SkaterCompare(y, x));
-
-                        for (int p = 0; p < _finalSkaters.Count; p++)
-                        {
-                            _finalSkaters[p].Position = (p + 1).ToString() + ".";
-                        }
-
-                        txtAllFoundSkaters.Text = string.Join(Environment.NewLine, _finalSkaters.Select(s => s.Position + " " + s.Name + " (" + Math.Round(s.TotalPoints, 2, MidpointRounding.AwayFromZero) + ")"));
-
-                        btnSaveOutputFiles.Enabled = btnSaveOutputFiles.Enabled = true;
-
-                        btnSaveOutputFiles.Text = "Luo tulostiedosto";
+                        txtAllFoundSkaters.Text = "";
+                        break;
                     }
 
+                    _finalSkaters = _event.Skaters.ToList();
+
+                    CalculatePoints(_finalSkaters);
+
+                    // Sort by points
+                    _finalSkaters.Sort((x, y) => SkaterPointCompare(x, y));
+
+                    for (int p = 0; p < _finalSkaters.Count; p++)
+                    {
+                        if (ddlTulospohja.SelectedItem.ToString().Contains("suppea") && p > 2)
+                        {
+                            _finalSkaters[p].Position = 0;
+                        }
+                        else
+                        {
+                            _finalSkaters[p].Position = p + 1;
+                        }
+                    }
+
+                    // Re-sort positions 4+ for basic series according to original skating order instead of points
+                    _finalSkaters.Sort(3, _finalSkaters.Count - 3, Comparer<Skater>.Create((x, y) => x.SkatingOrder.CompareTo(y.SkatingOrder)));
+
+                    txtAllFoundSkaters.Text = string.Join(Environment.NewLine, _finalSkaters.Select(s => s.Position + ". " + s.Name + " (" + Math.Round(s.TotalPoints, 2, MidpointRounding.AwayFromZero) + ")"));
+
+                    btnSaveOutputFiles.Enabled = btnSaveOutputFiles.Enabled = true;
+
+                    btnSaveOutputFiles.Text = "Luo tulostiedosto";
                     break;
             }
         }
+
+        /// <summary>
+        /// Compares skaters based on original skating order.
+        /// </summary>
+        /// <param name="skaterY"></param>
+        /// <param name="skaterX"></param>
+        /// <returns></returns>
+        //private int SkaterOrderCompare(Skater skaterY, Skater skaterX)
+        //{
+
+        //}
 
         /// <summary>
         /// Compares skaters based on total points. If total points are equal, then "basic skating" defines order, if that is same too, then "presentation" defines order
@@ -493,9 +516,9 @@ namespace com.jussipalo.tahti
         /// <param name="skaterY"></param>
         /// <param name="skaterX"></param>
         /// <returns></returns>
-        private int SkaterCompare(Skater skaterY, Skater skaterX)
+        private int SkaterPointCompare(Skater skaterX, Skater skaterY)
         {
-            if(skaterY.TotalPoints == 0 && skaterX.TotalPoints == 0)
+            if (skaterY.TotalPoints == 0 && skaterX.TotalPoints == 0)
             {
                 return 0;
             }
@@ -526,8 +549,14 @@ namespace com.jussipalo.tahti
 
         private void InitSkatersTable()
         {
+            dgvSkaters.RowValidating -= dgvSkaters_RowValidating;
+            dgvSkaters.CellValidating -= dgvSkaters_CellValidating;
+
             dgvSkaters.Rows.Clear();
             dgvSkaters.CommitEdit(0);
+
+            dgvSkaters.RowValidating += dgvSkaters_RowValidating;
+            dgvSkaters.CellValidating += dgvSkaters_CellValidating;
 
             if (_event.Skaters.Count == 0)
             {
@@ -537,6 +566,7 @@ namespace com.jussipalo.tahti
             foreach (var skater in _event.Skaters)
             {
                 var row = new DataGridViewRow();
+                row.Cells.Add(new DataGridViewTextBoxCell() { Value = skater.SkatingOrder });
                 row.Cells.Add(new DataGridViewTextBoxCell() { Value = skater.Name });
                 row.Cells.Add(new DataGridViewTextBoxCell() { Value = skater.Team });
 
@@ -683,25 +713,28 @@ namespace com.jussipalo.tahti
 
         private void dgvSkaters_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            string oldValue = ((DataGridView)sender).Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
+            var oldValue = ((DataGridView)sender).Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
             string newValue = e.FormattedValue.ToString();
 
-            if (oldValue == null || oldValue.Equals(newValue))
+            DataGridViewRow row = ((DataGridView)sender).Rows[e.RowIndex];
+            var currSkater = _event.Skaters.Find(s => s.SkatingOrder.Equals(row.Cells[0].Value) && s.Name.Equals(row.Cells[1].Value.ToString()) && s.Team.Equals(row.Cells[2].Value.ToString()));
+
+            if (oldValue == null || oldValue.Equals(newValue) || currSkater == null)
             {
                 return;
             }
-
-            Skater currSkater;
-
+            
             switch (e.ColumnIndex)
             {
                 case (0):
-                    currSkater = _event.Skaters.Find(s => s.Name.ToString().Equals(oldValue));
-                    currSkater.Name = newValue;
+                    currSkater.SkatingOrder = int.Parse(newValue);
                     break;
 
                 case (1):
-                    currSkater = _event.Skaters.Find(s => s.Team.ToString().Equals(oldValue));
+                    currSkater.Name = newValue;
+                    break;
+
+                case (2):
                     currSkater.Team = newValue;
                     break;
             }

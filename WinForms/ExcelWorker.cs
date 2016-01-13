@@ -51,7 +51,7 @@ namespace com.jussipalo.tahti
                     {
                         wb.Names["Pisteet" + (i + 1).ToString()].Value = FormatFraction(skater.AveragePointsPerArea[i]);
 
-                        var picture = ws.Drawings.AddPicture(skater.Position.Replace(".", "_") + "StarPicture" + (i + 1).ToString(), circle);
+                        var picture = ws.Drawings.AddPicture(skater.SkatingOrder + "_" + "StarPicture" + (i + 1).ToString(), circle);
 
                         picture.SetPosition(
                             wb.Names["Pisteet" + (i + 1).ToString()].Start.Row,
@@ -62,7 +62,16 @@ namespace com.jussipalo.tahti
                     }
 
                     wb.Names["PisteetTotal"].Value = Math.Round(skater.TotalPoints, 2, MidpointRounding.AwayFromZero);
-                    wb.Names["Sija"].Value = skater.Position;
+
+                    if (skater.Position == 0)
+                    {
+                        // In basic, only display position to first 3 skaters
+                        wb.Names["Sija"].Value = "";
+                    }
+                    else
+                    {
+                        wb.Names["Sija"].Value = skater.Position + ".";
+                    }
 
                     if (!string.IsNullOrWhiteSpace(skater.Mention))
                     {
@@ -73,7 +82,7 @@ namespace com.jussipalo.tahti
                         wb.Names["Erikoismaininnat"].Value = "";
                     }
 
-                    if(skater.Deductions.Count > 0)
+                    if (skater.Deductions.Count > 0)
                     {
                         if (skater.Deductions[1].Equals(0.0))
                         {
