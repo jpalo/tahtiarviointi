@@ -39,6 +39,9 @@
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.dgvSkaters = new System.Windows.Forms.DataGridView();
+            this.Order = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Nimi = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Seura = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.txtMention = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -87,9 +90,6 @@
             this.avaaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tallennaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.suljeSovellusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Order = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Nimi = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Seura = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl.SuspendLayout();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSkaters)).BeginInit();
@@ -197,6 +197,32 @@
             this.dgvSkaters.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvSkaters_EditingControlShowing);
             this.dgvSkaters.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvSkaters_RowValidating);
             this.dgvSkaters.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dgvSkaters_UserDeletingRow);
+            // 
+            // Order
+            // 
+            this.Order.Frozen = true;
+            this.Order.HeaderText = "Järjestys";
+            this.Order.MinimumWidth = 50;
+            this.Order.Name = "Order";
+            this.Order.Width = 50;
+            // 
+            // Nimi
+            // 
+            this.Nimi.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Nimi.Frozen = true;
+            this.Nimi.HeaderText = "Nimi";
+            this.Nimi.MinimumWidth = 160;
+            this.Nimi.Name = "Nimi";
+            this.Nimi.Width = 160;
+            // 
+            // Seura
+            // 
+            this.Seura.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Seura.Frozen = true;
+            this.Seura.HeaderText = "Seura";
+            this.Seura.MinimumWidth = 160;
+            this.Seura.Name = "Seura";
+            this.Seura.Width = 160;
             // 
             // tabPage4
             // 
@@ -698,48 +724,23 @@
             // avaaToolStripMenuItem
             // 
             this.avaaToolStripMenuItem.Name = "avaaToolStripMenuItem";
-            this.avaaToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.avaaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.avaaToolStripMenuItem.Text = "Avaa...";
             this.avaaToolStripMenuItem.Click += new System.EventHandler(this.avaaToolStripMenuItem_Click);
             // 
             // tallennaToolStripMenuItem
             // 
             this.tallennaToolStripMenuItem.Name = "tallennaToolStripMenuItem";
-            this.tallennaToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.tallennaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.tallennaToolStripMenuItem.Text = "Tallenna";
             this.tallennaToolStripMenuItem.Click += new System.EventHandler(this.tallennaToolStripMenuItem_Click);
             // 
             // suljeSovellusToolStripMenuItem
             // 
             this.suljeSovellusToolStripMenuItem.Name = "suljeSovellusToolStripMenuItem";
-            this.suljeSovellusToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.suljeSovellusToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.suljeSovellusToolStripMenuItem.Text = "Sulje sovellus";
-            // 
-            // Order
-            // 
-            this.Order.Frozen = true;
-            this.Order.HeaderText = "Järjestys";
-            this.Order.MinimumWidth = 50;
-            this.Order.Name = "Order";
-            this.Order.Width = 50;
-            // 
-            // Nimi
-            // 
-            this.Nimi.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Nimi.Frozen = true;
-            this.Nimi.HeaderText = "Nimi";
-            this.Nimi.MinimumWidth = 160;
-            this.Nimi.Name = "Nimi";
-            this.Nimi.Width = 160;
-            // 
-            // Seura
-            // 
-            this.Seura.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.Seura.Frozen = true;
-            this.Seura.HeaderText = "Seura";
-            this.Seura.MinimumWidth = 160;
-            this.Seura.Name = "Seura";
-            this.Seura.Width = 160;
+            this.suljeSovellusToolStripMenuItem.Click += new System.EventHandler(this.suljeSovellusToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -761,6 +762,7 @@
             this.MinimizeBox = false;
             this.Name = "Form1";
             this.Text = "Tähtiarvioinnin tulostus";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.tabControl.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSkaters)).EndInit();

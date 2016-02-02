@@ -900,5 +900,18 @@ namespace com.jussipalo.tahti
 
             return true;
         }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(MessageBox.Show("Haluatko varmasti sulkea sovelluksen, tallentamattomat muutokset menetetään!", "Huomautus", MessageBoxButtons.YesNo) != DialogResult.Yes)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void suljeSovellusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();            
+        }
     }
 }
