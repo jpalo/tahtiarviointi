@@ -33,7 +33,7 @@
     <ProductName>Tähtiarviointi</ProductName>
     <PublisherName>Jussi Palo</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
-    <ApplicationRevision>16</ApplicationRevision>
+    <ApplicationRevision>21</ApplicationRevision>
     <ApplicationVersion>1.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -59,10 +59,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>D6337FD781E26ECCE72DDC5873B3B863159F89CC</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>F7616223EB0E8204DF748C42444ABB23CB22AABD</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Tahti_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>codesignigcert.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -92,6 +92,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common.cs" />
     <Compile Include="ExcelWorker.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -138,7 +139,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Tahti_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

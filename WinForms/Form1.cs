@@ -87,7 +87,7 @@ namespace com.jussipalo.tahti
             {
                 System.Xml.Serialization.XmlSerializer writer = new System.Xml.Serialization.XmlSerializer(typeof(Event));
 
-                path = Path.Combine(txtOutputFolder.Text, txtAikaPaikka.Text + "_" + txtTapahtumaSarja.Text + "_" + ddlTulospohja.Items[ddlTulospohja.SelectedIndex] + ".xml");
+                path = Path.Combine(txtOutputFolder.Text, Common.CreateValidFilename(txtAikaPaikka.Text + "_" + txtTapahtumaSarja.Text + "_" + ddlTulospohja.Items[ddlTulospohja.SelectedIndex]) + "_" + DateTime.Now.ToString("yyyyMMdd") + ".xml");
                 FileStream file = File.Create(path);
 
                 writer.Serialize(file, _event);
@@ -488,7 +488,10 @@ namespace com.jussipalo.tahti
                     }
 
                     // Re-sort positions 4+ for basic series according to original skating order instead of points
-                    _finalSkaters.Sort(3, _finalSkaters.Count - 3, Comparer<Skater>.Create((x, y) => x.SkatingOrder.CompareTo(y.SkatingOrder)));
+                    if (_finalSkaters.Count > 3 && ddlTulospohja.SelectedItem.ToString().Contains("suppea"))
+                    {
+                        _finalSkaters.Sort(3, _finalSkaters.Count - 3, Comparer<Skater>.Create((x, y) => x.SkatingOrder.CompareTo(y.SkatingOrder)));
+                    }
 
                     txtAllFoundSkaters.Text = string.Join(Environment.NewLine, _finalSkaters.Select(s => s.Position + ". " + s.Name + " (" + Math.Round(s.TotalPoints, 2, MidpointRounding.AwayFromZero) + ")"));
 
@@ -498,18 +501,7 @@ namespace com.jussipalo.tahti
                     break;
             }
         }
-
-        /// <summary>
-        /// Compares skaters based on original skating order.
-        /// </summary>
-        /// <param name="skaterY"></param>
-        /// <param name="skaterX"></param>
-        /// <returns></returns>
-        //private int SkaterOrderCompare(Skater skaterY, Skater skaterX)
-        //{
-
-        //}
-
+                
         /// <summary>
         /// Compares skaters based on total points. If total points are equal, then "basic skating" defines order, if that is same too, then "presentation" defines order
         /// </summary>
@@ -723,7 +715,7 @@ namespace com.jussipalo.tahti
             {
                 return;
             }
-            
+
             switch (e.ColumnIndex)
             {
                 case (0):
@@ -903,7 +895,7 @@ namespace com.jussipalo.tahti
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(MessageBox.Show("Haluatko varmasti sulkea sovelluksen, tallentamattomat muutokset menetetään!", "Huomautus", MessageBoxButtons.YesNo) != DialogResult.Yes)
+            if (MessageBox.Show("Haluatko varmasti sulkea sovelluksen, tallentamattomat muutokset menetetään!", "Huomautus", MessageBoxButtons.YesNo) != DialogResult.Yes)
             {
                 e.Cancel = true;
             }
@@ -911,7 +903,9 @@ namespace com.jussipalo.tahti
 
         private void suljeSovellusToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Application.Exit();            
+            Application.Exit();
         }
+
+
     }
 }

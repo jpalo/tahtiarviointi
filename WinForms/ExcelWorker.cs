@@ -133,7 +133,7 @@ namespace com.jussipalo.tahti
                     drawing.SetSize(100);
                 }
 
-                generatedFile = outputFolder + "\\" + tapahtumaSarja.Replace(",", "").Replace(" ", "_") + "_" + DateTime.Now.ToString("yyyyMMdd") + ".xlsx";
+                generatedFile = outputFolder + "\\" + Common.CreateValidFilename(aikaJaPaikka + "_" + tapahtumaSarja + "_" + DateTime.Now.ToString("yyyyMMdd")) + ".xlsx";
                 ep.SaveAs(new FileInfo(generatedFile));
             }
             catch (Exception ex)
