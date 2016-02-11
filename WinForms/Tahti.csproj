@@ -31,9 +31,9 @@
     <SupportUrl>https://tahtiarviointi.codeplex.com</SupportUrl>
     <TargetCulture>fi</TargetCulture>
     <ProductName>Tähtiarviointi</ProductName>
-    <PublisherName>Jussi Palo</PublisherName>
+    <PublisherName>Tähtiarviointi</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>1.0.2.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
