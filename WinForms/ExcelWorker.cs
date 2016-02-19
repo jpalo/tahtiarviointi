@@ -13,11 +13,71 @@ namespace com.jussipalo.tahti
 {
     static class ExcelWorker
     {
+        private static void GenerateAllSkatersWorksheet(ExcelPackage ep, string tulosPohja, string tapahtumaSarja, string aikaJaPaikka, List<Skater> finalSkaters)
+        {
+            try
+            {
+                var ws = ep.Workbook.Worksheets.Add("Kaikki");
+                ws.PrinterSettings.Orientation = eOrientation.Landscape;
+                ws.Cells["A1:H1"].Merge = true;
+
+                ws.Cells["A1"].Value = tapahtumaSarja + ", " + aikaJaPaikka;
+
+                ws.Cells["A2"].Value = "Järj.";
+                ws.Cells["B2"].Value = "Sij.";
+                ws.Cells["C2"].Value = "Nimi";
+                ws.Cells["D2"].Value = "Seura";
+                ws.Cells["E2"].Value = "T1";
+                ws.Cells["F2"].Value = "T2";
+                ws.Cells["G2"].Value = "T3";
+                ws.Cells["H2"].Value = "Osa-alue";
+
+                ws.Cells["A3"].LoadFromArrays(SkaterListToArray(finalSkaters, tulosPohja));
+
+                ws.Cells[ws.Dimension.Address].AutoFitColumns();
+
+                ep.Workbook.Worksheets.MoveToStart("Kaikki");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Sattui iso virhe! " + ex.Message);
+            }
+        }
+
+        private static List<string[]> SkaterListToArray(List<Skater> finalSkaters, string tulosPohja)
+        {
+            var flatSkaters = new List<string[]>();
+
+            for (int s = 0; s < finalSkaters.Count; s++)
+            {
+                for (int p = 0; p < finalSkaters[s].PointsJudge1.Count; p++)
+                {
+                    flatSkaters.Add(new string[] { finalSkaters[s].SkatingOrder.ToString(), finalSkaters[s].Position.ToString(), finalSkaters[s].Name,
+                        finalSkaters[s].Team, finalSkaters[s].PointsJudge1[p].ToString(), finalSkaters[s].PointsJudge2[p].ToString(),
+                        finalSkaters[s].PointsJudge3[p].ToString(), GetArea(p, tulosPohja) });
+                }
+            }
+
+            return flatSkaters;
+        }
+
+        private static string GetArea(int area, string tulosPohja)
+        {
+            if (tulosPohja.ToLower().Contains("laaja"))
+            {
+                return Common.ExtendedAreas[area];
+            }
+            else
+            {
+                return Common.BasicAreas[area];
+            }
+        }
+
         /// <summary>
-        /// Generates result Excel
+        /// Generates result Excel containing score papers to be given to skaters as well as combines paper for judges
         /// </summary>
         /// <param name="tulosPohja"></param>
-        public static string GenerateResultFile(string tulosPohja, string templateFile, string tapahtumaSarja, string aikaJaPaikka, List<Skater> _finalSkaters, string outputFolder)
+        public static string GenerateResultFile(string tulosPohja, string templateFile, string tapahtumaSarja, string aikaJaPaikka, List<Skater> finalSkaters, string outputFolder)
         {
             string generatedFile = "";
 
@@ -42,7 +102,7 @@ namespace com.jussipalo.tahti
                 wb.Names["Tapahtuma_ja_sarja"].Value = tapahtumaSarja;
                 wb.Names["Aika_ja_paikka"].Value = aikaJaPaikka;
 
-                foreach (var skater in _finalSkaters)
+                foreach (var skater in finalSkaters)
                 {
                     wb.Names["Nimi"].Value = skater.Name;
                     wb.Names["Seura"].Value = skater.Team;
@@ -101,8 +161,6 @@ namespace com.jussipalo.tahti
 
                     wb.Worksheets.Add(skater.Name, wb.Worksheets["Template"]);
 
-                    //wb.Worksheets.MoveToEnd("Template");
-
                     // Remove star pictures
                     var drawingCollection = ws.Drawings.Where(d => d.Name.Contains("StarPicture")).Select(d => d.Name).ToList();
 
@@ -122,7 +180,7 @@ namespace com.jussipalo.tahti
                 wb.Names["Sija"].Value = "";
                 wb.Names["Erikoismaininnat"].Value = "";
 
-                for (int i = 0; i < _finalSkaters[0].AveragePointsPerArea.Count; i++)
+                for (int i = 0; i < finalSkaters[0].AveragePointsPerArea.Count; i++)
                 {
                     wb.Names["Pisteet" + (i + 1).ToString()].Value = "";
                 }
@@ -132,6 +190,13 @@ namespace com.jussipalo.tahti
                 {
                     drawing.SetSize(100);
                 }
+
+                // Generate sheet containing all skaters and their points
+                GenerateAllSkatersWorksheet(ep, tulosPohja, tapahtumaSarja, aikaJaPaikka, finalSkaters);
+
+                // Finally move template sheet to end and hide it
+                wb.Worksheets.MoveToEnd("Template");
+                ws.Hidden = eWorkSheetHidden.Hidden;
 
                 generatedFile = outputFolder + "\\" + Common.CreateValidFilename(aikaJaPaikka + "_" + tapahtumaSarja + "_" + DateTime.Now.ToString("yyyyMMdd")) + ".xlsx";
                 ep.SaveAs(new FileInfo(generatedFile));
